@@ -6,18 +6,21 @@ namespace Phones
 {
     class Program
     {
-        private static string template = @"BEGIN:VCARD" + Environment.NewLine +
-                                          "VERSION:3.0" + Environment.NewLine +
-                                          "FN:{0}" + Environment.NewLine +
-                                          "N:;{0};;;" + Environment.NewLine +
-                                          "TEL;TYPE=CELL:{1}" + Environment.NewLine +
-                                          "END:VCARD";
+        private static readonly string Template =
+            @"BEGIN:VCARD" + Environment.NewLine +
+            "VERSION:3.0" + Environment.NewLine +
+            "FN:{0}" + Environment.NewLine +
+            "N:;{0};;;" + Environment.NewLine +
+            "TEL;TYPE=CELL:{1}" + Environment.NewLine +
+            "END:VCARD";
 
         static void Main(string[] args)
         {
-            if (args.Length != 2 && File.Exists(args[0]))
+            if (args.Length != 2 || !File.Exists(args[0]))
             {
-                throw new ArgumentException("Invalid args");
+                Console.WriteLine("Invalid arguments");
+                Console.WriteLine("Correct usage: Phones.exe source-file output-file");
+                return;
             }
 
             var contacts = File.ReadAllLines(args[0]);
@@ -30,7 +33,7 @@ namespace Phones
             var split = contact.Split(',');
             var name = split[0];
             var number = split[1];
-            return string.Format(template, name, number);
+            return string.Format(Template, name, number);
         }
     }
 }
